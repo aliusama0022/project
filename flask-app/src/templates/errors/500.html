@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - Flask Web App{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto text-center">
+        <div class="error-page">
+            <div class="error-code mb-4">
+                <h1 class="display-1 text-danger fw-bold">500</h1>
+            </div>
+            
+            <div class="error-message mb-4">
+                <h2 class="mb-3">Internal Server Error</h2>
+                <p class="lead text-muted">
+                    Something went wrong on our end. We're working to fix this issue. Please try again later.
+                </p>
+            </div>
+            
+            <div class="error-actions mb-5">
+                <a href="{{ url_for('main.home') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-home me-2"></i>Go Home
+                </a>
+                <button onclick="location.reload()" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-sync-alt me-2"></i>Try Again
+                </button>
+            </div>
+            
+            <div class="error-info">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                            What happened?
+                        </h5>
+                        <p class="card-text">
+                            Our server encountered an unexpected condition that prevented it from fulfilling your request. 
+                            This could be due to a temporary issue or maintenance.
+                        </p>
+                        
+                        <h6 class="mt-3">What can you do?</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Wait a few minutes and try again</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Go back to the previous page</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Visit our home page</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Contact us if the problem persists</li>
+                        </ul>
+                        
+                        <div class="mt-4">
+                            <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-envelope me-2"></i>Contact Support
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-code h1 {
+    font-size: 8rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.error-page {
+    padding: 2rem 0;
+}
+
+.error-info .card {
+    text-align: left;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .error-code h1 {
+        font-size: 4rem;
+    }
+    
+    .error-actions .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+

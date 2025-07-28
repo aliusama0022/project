@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - Flask Web App{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto text-center">
+        <div class="error-page">
+            <div class="error-code mb-4">
+                <h1 class="display-1 text-primary fw-bold">404</h1>
+            </div>
+            
+            <div class="error-message mb-4">
+                <h2 class="mb-3">Oops! Page Not Found</h2>
+                <p class="lead text-muted">
+                    The page you're looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.
+                </p>
+            </div>
+            
+            <div class="error-actions mb-5">
+                <a href="{{ url_for('main.home') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-home me-2"></i>Go Home
+                </a>
+                <button onclick="history.back()" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>Go Back
+                </button>
+            </div>
+            
+            <div class="error-suggestions">
+                <h5 class="mb-3">You might want to try:</h5>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-home fa-2x text-primary mb-2"></i>
+                                <h6>Home Page</h6>
+                                <a href="{{ url_for('main.home') }}" class="btn btn-sm btn-outline-primary">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-info-circle fa-2x text-primary mb-2"></i>
+                                <h6>About Us</h6>
+                                <a href="{{ url_for('main.about') }}" class="btn btn-sm btn-outline-primary">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-cog fa-2x text-primary mb-2"></i>
+                                <h6>Services</h6>
+                                <a href="{{ url_for('main.services') }}" class="btn btn-sm btn-outline-primary">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
+                                <h6>Contact</h6>
+                                <a href="{{ url_for('main.contact') }}" class="btn btn-sm btn-outline-primary">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-code h1 {
+    font-size: 8rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.error-page {
+    padding: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    .error-code h1 {
+        font-size: 4rem;
+    }
+    
+    .error-actions .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+

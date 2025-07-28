@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}About - Flask Web App{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="mb-4">About Our Flask Web App</h1>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">Project Overview</h3>
+                <p class="card-text">
+                    This Flask web application demonstrates modern web development practices, including containerization, 
+                    continuous integration/continuous deployment (CI/CD), and cloud deployment strategies. Built as a 
+                    multi-page application, it showcases the power and flexibility of the Flask framework.
+                </p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">Technology Stack</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Backend</h5>
+                        <ul>
+                            <li>Python Flask Framework</li>
+                            <li>SQLite Database</li>
+                            <li>SQLAlchemy ORM</li>
+                            <li>RESTful API Design</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Frontend</h5>
+                        <ul>
+                            <li>Bootstrap 5 CSS Framework</li>
+                            <li>Responsive Design</li>
+                            <li>Font Awesome Icons</li>
+                            <li>Modern JavaScript</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">Deployment Architecture</h3>
+                <p class="card-text">
+                    The application is containerized using Docker and deployed on AWS EC2. It runs alongside an Nginx 
+                    server, with the Flask app serving on port 5000 and Nginx on port 80. The deployment process is 
+                    automated using GitHub Actions, which builds the Docker image and pushes it to DockerHub.
+                </p>
+                
+                <h5 class="mt-3">Key Components:</h5>
+                <ul>
+                    <li><strong>Docker:</strong> Containerization for consistent deployment</li>
+                    <li><strong>Docker Compose:</strong> Multi-container orchestration</li>
+                    <li><strong>GitHub Actions:</strong> Automated CI/CD pipeline</li>
+                    <li><strong>DockerHub:</strong> Container image registry</li>
+                    <li><strong>AWS EC2:</strong> Cloud hosting platform</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Features</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Application Features</h5>
+                        <ul>
+                            <li>Multi-page navigation</li>
+                            <li>User management system</li>
+                            <li>Contact form</li>
+                            <li>Service showcase</li>
+                            <li>Responsive design</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Development Features</h5>
+                        <ul>
+                            <li>Modular blueprint structure</li>
+                            <li>Template inheritance</li>
+                            <li>Static file management</li>
+                            <li>Database migrations</li>
+                            <li>Error handling</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

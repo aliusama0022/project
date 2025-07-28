@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Flask Web App{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-primary text-white rounded p-5 mb-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold">Welcome to Flask Web App</h1>
+            <p class="lead">A modern, containerized Flask application with CI/CD deployment pipeline.</p>
+            <a href="{{ url_for('main.about') }}" class="btn btn-light btn-lg">Learn More</a>
+        </div>
+        <div class="col-lg-6 text-center">
+            <i class="fas fa-rocket" style="font-size: 8rem; opacity: 0.7;"></i>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-code fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Modern Development</h5>
+                <p class="card-text">Built with Flask, Bootstrap, and modern web technologies for optimal performance.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-docker fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Containerized</h5>
+                <p class="card-text">Fully containerized with Docker for consistent deployment across environments.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-cloud fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Cloud Ready</h5>
+                <p class="card-text">Deployed on AWS EC2 with automated CI/CD pipeline using GitHub Actions.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-lg-8 mx-auto text-center">
+        <h2>Features</h2>
+        <p class="lead">This Flask application showcases modern web development practices and deployment strategies.</p>
+        <ul class="list-unstyled">
+            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Multi-page responsive design</li>
+            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>RESTful API endpoints</li>
+            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>SQLite database integration</li>
+            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Docker containerization</li>
+            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>GitHub Actions CI/CD</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+

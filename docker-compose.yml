@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Nginx static website (existing)
+  nginx-site:
+    image: usama0022/my-website:latest
+    container_name: nginx-site
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Flask web application (new)
+  flask-app:
+    image: usama0022/flask-app:latest
+    container_name: flask-app
+    build:
+      context: ./flask-app
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=src/main.py
+    volumes:
+      # Mount database directory for persistence
+      - flask-data:/app/src/database
+    depends_on:
+      - nginx-site
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-network
+
+volumes:
+  flask-data:
+    driver: local
+    name: flask-data
+
