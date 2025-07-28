@@ -30,6 +30,12 @@ jobs:
         cd flask-app
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+
+    - name: Prepare database for tests
+      run: |
+        cd flask-app
+        mkdir -p src/database
+        python -c "from src.main import app, db; with app.app_context(): db.create_all()"
         
     - name: Run basic tests
       run: |
@@ -161,7 +167,7 @@ jobs:
               echo "✅ Flask app is running successfully!"
               break
             fi
-            echo "Waiting... ($i/30)"
+            echo "Waiting... ($i/30 )"
             sleep 2
           done
           
