@@ -1,0 +1,205 @@
+name: Deploy Flask App
+
+# Trigger on push to innullrs branch
+on:
+  push:
+    branches: [ innullrs ]
+  pull_request:
+    branches: [ innullrs ]
+
+env:
+  DOCKER_IMAGE: usama0022/flask-app
+  CONTAINER_NAME: flask-app
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test Flask Application
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        cd flask-app
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Prepare database for tests
+      run: |
+        cd flask-app
+        mkdir -p src/database
+        python -c "from src.main import app, db; with app.app_context(): db.create_all()"
+        
+    - name: Run basic tests
+      run: |
+        cd flask-app
+        # Test if the app can start
+        python -c "from src.main import app; print('✅ Flask app imports successfully')"
+        
+        # Test if routes are accessible
+        python -c "
+        from src.main import app
+        with app.test_client() as client:
+            response = client.get('/')
+            assert response.status_code == 200
+            print('✅ Home route works')
+            
+            response = client.get('/about')
+            assert response.status_code == 200
+            print('✅ About route works')
+            
+            response = client.get('/api/users')
+            assert response.status_code == 200
+            print('✅ API routes work')
+        "
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: test
+    name: Build and Push Docker Image
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./flask-app
+        file: ./flask-app/Dockerfile
+        push: true
+        tags: |
+          ${{ env.DOCKER_IMAGE }}:latest
+          ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    name: Deploy to EC2
+    if: github.ref == 'refs/heads/innullrs'
+    
+    steps:
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          # Navigate to project directory
+          cd /home/ubuntu/project || { echo "Project directory not found"; exit 1; }
+          
+          # Pull latest images
+          echo "🐳 Pulling latest Docker images..."
+          docker pull ${{ env.DOCKER_IMAGE }}:latest
+          
+          # Update docker-compose.yml if needed
+          if [ ! -f docker-compose.yml ]; then
+            echo "⚠️  docker-compose.yml not found, creating it..."
+            cat > docker-compose.yml << 'EOF'
+          version: '3.8'
+          
+          services:
+            nginx-site:
+              image: usama0022/my-website:latest
+              container_name: nginx-site
+              ports:
+                - "80:80"
+              networks:
+                - app-network
+              restart: unless-stopped
+          
+            flask-app:
+              image: usama0022/flask-app:latest
+              container_name: flask-app
+              ports:
+                - "5000:5000"
+              networks:
+                - app-network
+              restart: unless-stopped
+              environment:
+                - FLASK_ENV=production
+                - FLASK_APP=src/main.py
+              volumes:
+                - flask-data:/app/src/database
+          
+          networks:
+            app-network:
+              driver: bridge
+          
+          volumes:
+            flask-data:
+              driver: local
+          EOF
+          fi
+          
+          # Stop existing Flask container if running
+          echo "🛑 Stopping existing Flask container..."
+          docker-compose stop flask-app || true
+          docker-compose rm -f flask-app || true
+          
+          # Start Flask app with new image
+          echo "🚀 Starting Flask app..."
+          docker-compose up -d flask-app
+          
+          # Wait for container to be healthy
+          echo "⏳ Waiting for Flask app to be ready..."
+          for i in {1..30}; do
+            if curl -f http://localhost:5000 > /dev/null 2>&1; then
+              echo "✅ Flask app is running successfully!"
+              break
+            fi
+            echo "Waiting... ($i/30 )"
+            sleep 2
+          done
+          
+          # Show container status
+          echo "📊 Container status:"
+          docker-compose ps
+          
+          # Show logs for debugging
+          echo "📋 Recent logs:"
+          docker-compose logs --tail=20 flask-app
+          
+          # Cleanup old images
+          echo "🧹 Cleaning up old images..."
+          docker image prune -f
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [test, build-and-push, deploy]
+    name: Notify Deployment Status
+    if: always()
+    
+    steps:
+    - name: Deployment Success
+      if: needs.deploy.result == 'success'
+      run: |
+        echo "🎉 Flask app deployed successfully!"
+        echo "🌐 Access your app at: http://your-ec2-ip:5000"
+        
+    - name: Deployment Failed
+      if: needs.deploy.result == 'failure'
+      run: |
+        echo "❌ Flask app deployment failed!"
+        echo "Check the logs above for details."
+        exit 1
+
